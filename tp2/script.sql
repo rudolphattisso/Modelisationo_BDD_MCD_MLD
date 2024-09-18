@@ -1,23 +1,15 @@
-CREATE TABLE PROFESSOR(
-   professor_id VARCHAR(50) ,
-   lastname VARCHAR(254)  NOT NULL,
-   surname VARCHAR(50)  NOT NULL,
-   birthdate DATE NOT NULL,
-   PRIMARY KEY(professor_id)
-);
-
 CREATE TABLE CLASSROOM(
    classroom_id VARCHAR(50) ,
    num VARCHAR(50)  NOT NULL,
    PRIMARY KEY(classroom_id)
 );
 
-CREATE TABLE SUBJECT(
-   id_subject VARCHAR(50) ,
-   name VARCHAR(50)  NOT NULL,
-   professor_id VARCHAR(50)  NOT NULL,
-   PRIMARY KEY(id_subject),
-   FOREIGN KEY(professor_id) REFERENCES PROFESSOR(professor_id)
+CREATE TABLE Personne(
+   Id_Personne SERIAL,
+   lastname VARCHAR(254)  NOT NULL,
+   surname VARCHAR(50)  NOT NULL,
+   birthdate DATE NOT NULL,
+   PRIMARY KEY(Id_Personne)
 );
 
 CREATE TABLE CLASS(
@@ -32,12 +24,28 @@ CREATE TABLE CLASS(
 
 CREATE TABLE STUDENT(
    student_id VARCHAR(50) ,
-   lastname VARCHAR(254)  NOT NULL,
-   surname VARCHAR(50)  NOT NULL,
-   birthdate DATE NOT NULL,
    class_id VARCHAR(50)  NOT NULL,
+   Id_Personne INTEGER NOT NULL,
    PRIMARY KEY(student_id),
-   FOREIGN KEY(class_id) REFERENCES CLASS(class_id)
+   UNIQUE(Id_Personne),
+   FOREIGN KEY(class_id) REFERENCES CLASS(class_id),
+   FOREIGN KEY(Id_Personne) REFERENCES Personne(Id_Personne)
+);
+
+CREATE TABLE PROFESSOR(
+   professor_id VARCHAR(50) ,
+   Id_Personne INTEGER NOT NULL,
+   PRIMARY KEY(professor_id),
+   UNIQUE(Id_Personne),
+   FOREIGN KEY(Id_Personne) REFERENCES Personne(Id_Personne)
+);
+
+CREATE TABLE SUBJECT(
+   id_subject VARCHAR(50) ,
+   name VARCHAR(50)  NOT NULL,
+   professor_id VARCHAR(50)  NOT NULL,
+   PRIMARY KEY(id_subject),
+   FOREIGN KEY(professor_id) REFERENCES PROFESSOR(professor_id)
 );
 
 CREATE TABLE notation(

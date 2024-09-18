@@ -5,33 +5,45 @@ CREATE TABLE TEAM(
    PRIMARY KEY(team_id)
 );
 
+CREATE TABLE Personne(
+   Id_Personne COUNTER,
+   lastname VARCHAR(50) NOT NULL,
+   surname VARCHAR(50) NOT NULL,
+   PRIMARY KEY(Id_Personne)
+);
+
 CREATE TABLE PLAYER(
    player_id VARCHAR(50),
-   lastname VARCHAR(254) NOT NULL,
-   surname VARCHAR(50) NOT NULL,
    birthdate DATE NOT NULL,
-   team_id VARCHAR(50) NOT NULL,
+   team_id VARCHAR(50),
+   Id_Personne INT NOT NULL,
    PRIMARY KEY(player_id),
-   FOREIGN KEY(team_id) REFERENCES TEAM(team_id)
+   UNIQUE(Id_Personne),
+   FOREIGN KEY(team_id) REFERENCES TEAM(team_id),
+   FOREIGN KEY(Id_Personne) REFERENCES Personne(Id_Personne)
 );
 
 CREATE TABLE REFEREE(
    referee_id VARCHAR(50),
-   lastname VARCHAR(254) NOT NULL,
-   surname VARCHAR(50) NOT NULL,
-   PRIMARY KEY(referee_id)
+   Id_Personne INT NOT NULL,
+   PRIMARY KEY(referee_id),
+   UNIQUE(Id_Personne),
+   FOREIGN KEY(Id_Personne) REFERENCES Personne(Id_Personne)
 );
 
 CREATE TABLE MATCH__(
    match_id VARCHAR(50),
-   start_date_time DATETIME NOT NULL,
-   result_team VARCHAR(50) NOT NULL,
-   result_team_1 VARCHAR(50) NOT NULL,
+   start_time DATE NOT NULL,
+   time_ TIME,
    referee_id VARCHAR(50) NOT NULL,
-   team_id VARCHAR(50) NOT NULL,
-   team_id_1 VARCHAR(50) NOT NULL,
    PRIMARY KEY(match_id),
-   FOREIGN KEY(referee_id) REFERENCES REFEREE(referee_id),
+   FOREIGN KEY(referee_id) REFERENCES REFEREE(referee_id)
+);
+
+CREATE TABLE participate(
+   team_id VARCHAR(50),
+   match_id VARCHAR(50),
+   PRIMARY KEY(team_id, match_id),
    FOREIGN KEY(team_id) REFERENCES TEAM(team_id),
-   FOREIGN KEY(team_id_1) REFERENCES TEAM(team_id)
+   FOREIGN KEY(match_id) REFERENCES MATCH__(match_id)
 );

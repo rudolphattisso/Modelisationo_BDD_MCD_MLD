@@ -1,111 +1,123 @@
 CREATE TABLE role_(
-   id_role COUNTER,
+   id INT,
    description VARCHAR(50),
    hierarchy_level VARCHAR(50),
-   PRIMARY KEY(id_role)
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE discipline(
-   id_discipline COUNTER,
-   PRIMARY KEY(id_discipline)
+   id INT,
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE station(
-   id_station COUNTER,
+   id INT,
    station_altitude INT NOT NULL,
    station_name VARCHAR(50) NOT NULL,
-   PRIMARY KEY(id_station)
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE country(
-   id_country COUNTER,
-   iso_country_code VARCHAR(2),
-   PRIMARY KEY(id_country)
+   id INT,
+   iso_country_code VARCHAR(3),
+   _name__ VARCHAR(50),
+   PRIMARY KEY(id)
 );
 
-CREATE TABLE team(
-   team_id COUNTER,
-   medal VARCHAR(50),
-   PRIMARY KEY(team_id)
+CREATE TABLE event_team(
+   id INT,
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE person(
-   id_person VARCHAR(6),
+   id VARCHAR(6),
    last_name VARCHAR(50) NOT NULL,
    first_name VARCHAR(50) NOT NULL,
    address VARCHAR(50),
    phone_number VARCHAR(50),
-   id_country INT NOT NULL,
-   PRIMARY KEY(id_person),
-   FOREIGN KEY(id_country) REFERENCES country(id_country)
+   country_id INT NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(country_id) REFERENCES country(id)
 );
 
 CREATE TABLE athlete(
-   id_athlete COUNTER,
-   id_person VARCHAR(6) NOT NULL,
-   PRIMARY KEY(id_athlete),
-   UNIQUE(id_person),
-   FOREIGN KEY(id_person) REFERENCES person(id_person)
+   id INT,
+   gold_medal COUNTER NOT NULL,
+   silver_medal COUNTER,
+   bronze_medal COUNTER,
+   person_id VARCHAR(6) NOT NULL,
+   PRIMARY KEY(id),
+   UNIQUE(person_id),
+   FOREIGN KEY(person_id) REFERENCES person(id)
 );
 
 CREATE TABLE staff(
-   id_staff COUNTER,
-   id_role INT NOT NULL,
-   id_person VARCHAR(6) NOT NULL,
-   PRIMARY KEY(id_staff),
-   UNIQUE(id_person),
-   FOREIGN KEY(id_role) REFERENCES role_(id_role),
-   FOREIGN KEY(id_person) REFERENCES person(id_person)
+   id INT,
+   role_id INT NOT NULL,
+   person_id VARCHAR(6) NOT NULL,
+   PRIMARY KEY(id),
+   UNIQUE(person_id),
+   FOREIGN KEY(role_id) REFERENCES role_(id),
+   FOREIGN KEY(person_id) REFERENCES person(id)
 );
 
 CREATE TABLE event(
-   id_event VARCHAR(50),
+   id VARCHAR(50),
    alpha_code VARCHAR(2),
-   id_discipline INT NOT NULL,
-   id_station INT NOT NULL,
-   PRIMARY KEY(id_event),
-   FOREIGN KEY(id_discipline) REFERENCES discipline(id_discipline),
-   FOREIGN KEY(id_station) REFERENCES station(id_station)
+   date_ DATE NOT NULL,
+   discipline_id INT NOT NULL,
+   station_id INT NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(discipline_id) REFERENCES discipline(id),
+   FOREIGN KEY(station_id) REFERENCES station(id)
 );
 
 CREATE TABLE round(
-   id_round COUNTER,
-   id_event VARCHAR(50) NOT NULL,
-   PRIMARY KEY(id_round),
-   FOREIGN KEY(id_event) REFERENCES event(id_event)
+   id INT,
+   event_id VARCHAR(50) NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(event_id) REFERENCES event(id)
 );
 
 CREATE TABLE manages(
-   id_staff INT,
-   id_staff_1 INT,
-   PRIMARY KEY(id_staff, id_staff_1),
-   FOREIGN KEY(id_staff) REFERENCES staff(id_staff),
-   FOREIGN KEY(id_staff_1) REFERENCES staff(id_staff)
+   manager_id INT,
+   subordinate_id INT,
+   PRIMARY KEY(manager_id, subordinate_id),
+   FOREIGN KEY(manager_id) REFERENCES staff(id),
+   FOREIGN KEY(subordinate_id) REFERENCES staff(id)
 );
 
 CREATE TABLE participates_time(
-   team_id INT,
-   id_round INT,
+   event_team_id INT,
+   round_id INT,
    time_ TIME NOT NULL,
-   PRIMARY KEY(team_id, id_round),
-   FOREIGN KEY(team_id) REFERENCES team(team_id),
-   FOREIGN KEY(id_round) REFERENCES round(id_round)
+   PRIMARY KEY(event_team_id, round_id),
+   FOREIGN KEY(event_team_id) REFERENCES event_team(id),
+   FOREIGN KEY(round_id) REFERENCES round(id)
 );
 
 CREATE TABLE is_in(
-   id_athlete INT,
-   team_id INT,
+   athlete_id INT,
+   event_team_id INT,
    bib_number VARCHAR(50),
-   PRIMARY KEY(id_athlete, team_id),
-   FOREIGN KEY(id_athlete) REFERENCES athlete(id_athlete),
-   FOREIGN KEY(team_id) REFERENCES team(team_id)
+   PRIMARY KEY(athlete_id, event_team_id),
+   FOREIGN KEY(athlete_id) REFERENCES athlete(id),
+   FOREIGN KEY(event_team_id) REFERENCES event_team(id)
 );
 
 CREATE TABLE participates_score(
-   id_round INT,
-   team_id INT,
+   round_id INT,
+   event_team_id INT,
    score INT NOT NULL,
-   PRIMARY KEY(id_round, team_id),
-   FOREIGN KEY(id_round) REFERENCES round(id_round),
-   FOREIGN KEY(team_id) REFERENCES team(team_id)
+   PRIMARY KEY(round_id, event_team_id),
+   FOREIGN KEY(round_id) REFERENCES round(id),
+   FOREIGN KEY(event_team_id) REFERENCES event_team(id)
+);
+
+CREATE TABLE supervise(
+   id INT,
+   id_1 VARCHAR(50),
+   PRIMARY KEY(id, id_1),
+   FOREIGN KEY(id) REFERENCES staff(id),
+   FOREIGN KEY(id_1) REFERENCES event(id)
 );
